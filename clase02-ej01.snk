@@ -1,0 +1,95 @@
+[Subsistema nuevo]
+* Clase 2 - Ejercicio 1
+* A un estacionamiento de un shopping arriban autos cada 40 ± 10 segundos. Para entrar los autos hacen una
+* única cola para luego acceder al carril de entrada donde una máquina entrega un comprobante y abre la barrera.
+* En la entrada hay 3 carriles con el mismo sistema (pueden entrar hasta tres autos a la vez). Para pasar el sistema
+* de barreras los autos demoran 15 ± 5 segundos. Luego los autos permanecen estacionados durante 90 ± 60
+* minutos para después retirarse por la salida del estacionamiento que tiene un sistema de barreras igual que la
+* entrada pero con 2 carriles solamente. Allí los autos forman una única cola antes de acceder a cualquier carril
+* donde deben pasar el comprobante por un lector de código de barras para que se abra la barrera. El tiempo para
+* cruzar la barrera es de 20 ± 10 segundos.
+* El estacionamiento tiene una capacidad para 300 autos. Si un auto no puede entrar queda esperando en la cola
+* de entrada hasta que otro salga del estacionamiento.
+* Tabular:
+* • El tiempo que cada auto estuvo en el estacionamiento (desde que llegó a la cola de entrada hasta que
+* salió del estacionamiento).
+* • El tiempo en cola para poder entrar / salir del estacionamiento (pasando por el sistema de barreras).
+* • Cada 20 minutos la cantidad de autos que están esperando para entrar.
+* • Cada 10 minutos la cantidad de autos en el estacionamiento.
+* Simular hasta que 1000 autos salieron del estacionamiento.
+*
+*
+* STORAGES
+*
+ENTRADA	STORAGE	3
+ESTACION	STORAGE	300
+SALIDA		STORAGE	2
+*
+* TABLES Y QTABLES
+*
+EDAD		TABLE		M1,2400,300,10 ; 10 INTERVALOS DE 5 MINUTOS, EL PRIMERO EN 4 MINUTOS
+AFUERA		TABLE		Q$ESTACION,0,2,10 ; 10 INTERVALOS DE 2 AUTOS, EL PRIMERO CON 0 AUTOS
+ENSISTEMA	TABLE		S$ESTACION,50,2,10 ; 10 INTERVALOS DE 2 AUTOS, EL PRIMERO CON 50 AUTOS
+*
+*
+* SIMULACION
+*
+	GENERATE	40,10
+*
+* ME PONGO EN COLA
+*
+	QUEUE		ESTACION
+	ENTER		ESTACION
+	DEPART		ESTACION
+*
+* PASO POR LA BARRERA DE ENTRADA
+*
+	QUEUE		ENTRADA
+	ENTER		ENTRADA
+	DEPART		ENTRADA
+	ADVANCE	15,5
+	LEAVE		ENTRADA
+*
+* INGRESO AL ESTACIONAMIENTO
+*
+	QUEUE		ESTACION
+	ENTER		ESTACION
+	DEPART		ESTACION
+	ADVANCE	5400,3600
+	LEAVE		ESTACION
+*
+* SALGO DEL ESTACIONAMIENTO
+*
+	QUEUE		SALIDA
+	ENTER		SALIDA
+	DEPART		SALIDA
+	ADVANCE	20,10
+	LEAVE		SALIDA
+	LEAVE		ESTACION
+	TERMINATE            1
+*
+* HAGO LAS TABULACIONES
+*
+* CADA 20 MINS AUTOS QUE ESTAN AFUERA
+*	
+	GENERATE	1200 
+	TABULATE	AFUERA
+	TERMINATE
+*
+* CADA 10 MINS AUTOS QUE ESTAN EN EL SISTEMA
+*
+	GENERATE	600
+	TABULATE	ENSISTEMA
+	TERMINATE
+
+	
+	
+
+
+<\F>
+Nombre=
+Descripcion=
+Version=
+Autor=
+Empresa=
+Opciones=

@@ -1,0 +1,49 @@
+[Subsistema nuevo]
+*---------------------------------------------------------------------------
+* ENUNCIADO
+* Para realizar un trámite en una financiera, arriban personas cada 120 +/- 100 segundos. La
+* atención demora 240 +/- 80 segundos y hay dos empleados para atender, con cola única.
+* La financiera cuenta con una sala de espera con capacidad para 6 personas sentadas, el resto
+* hace cola fuera del local. Simular de 10 a 15 horas.
+* Al finalizar la simulación, se desea tener todos los datos acerca de:
+* - Cola en la calle.
+* - Cola total (incluida la sala de espera)
+* - Utilización de la sala de espera.
+*Nota: Los datos que se piden son los que tabulan automáticamente (no definir tablas).
+*---------------------------------------------------------------------------
+*---------------------------------------------------------------------------
+*
+*
+* STORAGES
+*
+EMPLEADOS	STORAGE	2
+SALAESP	STORAGE	6
+*
+*
+	GENERATE	120,100
+	QUEUE		COLA	 ; ME PONGO EN LA COLA
+	SEIZE		COLA
+	DEPART		COLA
+	QUEUE		SALAESP ; ENTRO A LA SALA DE ESPERA
+	ENTER		SALAESP
+	LEAVE		SALAESP
+	QUEUE		EMPLEADOS ; VOYA A QUE ME ATIENDAN
+	ENTER		EMPLEADOS
+	LEAVE		EMPLEADOS
+	ADVANCE	240,80	; ME ATIENDEN
+	DEPART		EMPLEADOS
+	DEPART		SALAESP
+	RELEASE		COLA
+	TERMINATE
+* TIEMPO
+	GENERATE	3600
+	TERMINATE	1	
+	
+
+<\F>
+Nombre=
+Descripcion=
+Version=
+Autor=
+Empresa=
+Opciones=

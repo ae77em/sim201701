@@ -1,0 +1,97 @@
+[Subsistema nuevo]
+*****************
+* DECLARO LOS STORAGES
+*****************
+BANCO		STORAGE	10000 ; CANTIDAD TOTAL DE GENTE QUE PODRIA HABER EN EL BANCO
+CAJAS		STORAGE	3 ; LAS CAJAS DE ATENCION
+ENTRADA 	STORAGE	1 ; PUERTA DE ENTRADA
+SALIDA		STORAGE	1 ; PUERTA DE SALIDA
+*
+*
+*****************
+* DECLARO LAS TABLAS
+*****************
+CLIENTES	TABLE		S$BANCO,240,120,28	; 28 INTERVALOS DE 120 SEG, EMPEZANDO EN 240 SEG (4 MINS)
+EDADCOLA	TABLE		M1,120,60,58		; 58 INTERVALOS DE 1 SEG, EMPPEZANDO EN 2 MIN
+*
+*
+*****************
+*SIMULACION
+*****************
+*
+*
+	GENERATE	60,10 	; ENTRAN PESONAS CADA X TIEMPO
+*
+*
+*****************
+* PASO POR PUERTA DE ENTRADA
+*****************
+	QUEUE		ENTRADA
+	ENTER		ENTRADA
+	DEPART		ENTRADA
+	ADVANCE	3,2
+	LEAVE		ENTRADA	
+*
+*
+*****************
+* ENTRAN AL BANCO Y SE PONEN EN LA COLA	
+*****************
+	ENTER		BANCO
+	ADVANCE	5,2
+	QUEUE		COLA 
+	SEIZE		COLA 
+	DEPART		COLA
+*
+*
+*****************
+* VAN A UNA CAJA Y SON ATENDIDOS
+*****************
+	RELEASE 	COLA
+	TABULATE	EDADCOLA
+	QUEUE		CAJAS
+	ENTER		CAJAS
+	DEPART		CAJAS
+	ADVANCE	180,120
+*
+*
+*****************
+* SALGO DE LA COLA
+*****************
+	LEAVE		CAJAS
+	ADVANCE	7,2	
+*
+*
+*****************
+* PASO POR PUERTA DE SALIDA
+*****************
+	QUEUE		SALIDA
+	ENTER		SALIDA
+	DEPART		SALIDA
+	ADVANCE	3,2
+	LEAVE		SALIDA
+	LEAVE		BANCO
+	TERMINATE	
+*
+*
+*****************
+* SUBSISTEMA PARA CONTAR LOS CLIENTES
+*****************
+	GENERATE	120
+	TABULATE	CLIENTES
+	TERMINATE
+*
+*
+*****************
+* TIEMPO
+*****************
+	GENERATE	3600
+	TERMINATE	1
+
+
+<\F>
+Nombre=
+Descripcion=
+Version=
+Autor=
+Empresa=
+Opciones=

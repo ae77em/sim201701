@@ -1,0 +1,21 @@
+[Subsistema nuevo]
+* DECLARO LOS STORAGES
+BOLET	STORAGE	2
+
+*SIMULACION
+	GENERATE	5,1
+	QUEUE		BOLET
+	ENTER		BOLET
+	DEPART		BOLET
+	ADVANCE	10,4
+	LEAVE		BOLET
+	TERMINATE	1
+	
+
+<\F>
+Nombre=
+Descripcion=
+Version=
+Autor=
+Empresa=
+Opciones=
