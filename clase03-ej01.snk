@@ -1,0 +1,132 @@
+[Subsistema nuevo]
+* Al edificio de Rentas llegan personas cada 30 ± 10 segundos. /
+*
+* Para entrar hay una puerta giratoria por la cual no pueden pasar más de dos personas simultáneamente, entonces se forma una cola antes de la misma. /
+*
+* Para pasar la puerta se demora 5 ± 3 segundos. /
+*
+*
+* Luego de entrar el 30% de las personas se dirigen a informes donde hay un solo empleado para las consultas 
+* mientras que el resto se dirige hacia el hall central demorando 20 ± 5 segundos. /
+*
+* Para poder ser atendido por el empleado de informes las personas deben hacer una única cola; la atención de las
+* consultas demora 120 ± 60 segundos y luego la persona atendida se dirige hacia el hall central demorando 30 ±
+* 10 segundos. /
+*
+* El 60% de las personas que llegan al hall central quieren inscribirse como contribuyentes locales
+* por lo que tiene que subir al primer piso demorando 90 ± 30 segundos. /
+*
+* El resto quiere inscribirse como convenio multilateral por lo que deben ir al segundo piso demorando 180 ± 60 segundos en llegar. /
+*
+* 1ER PISO
+* Los que se inscriben en el primer piso tiene que sacar un número para poder ser atendido por cualquiera de los 2
+* empleados encargados de hacer las inscripciones. 
+* Los empleados demoran 300 ± 180 segundos en atender a los contribuyentes. 
+* 
+* Luego de la inscripción la persona se retira demorando 240 ± 60 en salir del edificio. /
+*
+* 2DO PISO
+* Los que se inscriben en el segundo piso son atendidos por una sola persona que demora 660 ± 180 segundos en
+* hacer el trámite de inscripción por contribuyente.
+* 
+* Luego de la inscripción la persona se retira demorando 480 ± 60 en salir del edificio.
+*
+* Simular 6 horas de atención al público.
+*
+* Tabular:
+* • El tiempo total que se demora para hace cada uno de los trámites.
+* • El tiempo en cola antes de ser atendido en informes.
+* • El tiempo en cola antes de ser atendido por los empleados del primer piso.
+* • El tiempo en cola antes de ser atendido por el empleado del segundo piso.
+* • Cada 30 minutos la cantidad de personas que hay en el edificio.
+* • Cada 10 minutos la cantidad de personas que están en la cola del primer y segundo piso.
+*
+*--------------------------------------------------------------------------------------------------------------------------------------------------------
+*
+* STORAGES
+*
+DOSPERS	STORAGE	2
+NUMERO		STORAGE	10000
+*
+* TABLES Y QTABLES
+*
+EDADLOCA	TABLE		M1,300,60,30 ; 30 INTERVALOS DE 30 SEG, 1ER INTERVALO EN 5 MIN
+EDADMULT	TABLE		M1,600,60,30 ; 30 INTERVALOS DE 30 SEG, 1ER INTERVALO EN 10 MIN
+PREVINFO	QTABLE		INFORMES,0,60,20 ; 20 INTERVALOS DE 60 SEG EMPEZANDO EN 0
+PREVLOCA	QTABLE		NUMERO,0,60,20 ; 20 INTERVALOS DE 60 SEG EMPEZANDO EN 0
+PREVMULT	QTABLE		SOLAPERS,0,60,20 ; 20 INTERVALOS DE 60 SEG EMPEZANDO EN 0
+*
+*
+* SIMULACION
+*
+	GENERATE	30,10
+*
+	QUEUE 		GIRATORIA
+	SEIZE		GIRATORIA
+	DEPART		GIRATORIA
+	ADVANCE	5,3
+	RELEASE		GIRATORIA
+*
+* SEPARACION A DISTINTOS SECTORES DEL EDIFICIO
+*
+	TRANSFER	0.7,,HALL
+*
+* INFORMES
+*
+INFO	QUEUE		INFORMES
+	SEIZE		INFORMES
+	DEPART		INFORMES
+	ADVANCE	120,60
+	RELEASE		INFORMES
+	ADVANCE	10,5
+*
+* HALL CENTRAL
+*
+HALL	ADVANCE	20,5
+	TRANSFER	0.40,,MULTI
+*
+* CONTRIBUYENTES LOCALES - 1ER PISO
+*
+	ADVANCE	90,30
+	QUEUE		NUMERO
+	ENTER		NUMERO
+	DEPART		NUMERO
+	QUEUE		DOSPERS
+	ENTER		DOSPERS
+	DEPART		DOSPERS
+	ADVANCE	300,180
+	LEAVE		DOSPERS
+	LEAVE		NUMERO
+	TABULATE	EDADLOCA
+	ADVANCE	240,60
+	TRANSFER	,SALIDA
+*
+* CONVENIO MULTILATERAL- 2DO PISO
+*
+MULTI	ADVANCE	180,60
+	QUEUE		SOLAPERS
+	SEIZE		SOLAPERS
+	DEPART		SOLAPERS
+	ADVANCE 	660,180
+	RELEASE		SOLAPERS
+	TABULATE	EDADMULT
+	ADVANCE	480,60
+*
+*	
+SALIDA	TERMINATE	
+*
+* TIEMPO
+*
+	GENERATE	3600
+	TERMINATE	1
+	
+	
+
+
+<\F>
+Nombre=
+Descripcion=
+Version=
+Autor=
+Empresa=
+Opciones=
